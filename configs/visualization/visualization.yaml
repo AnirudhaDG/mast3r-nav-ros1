@@ -1,0 +1,46 @@
+# Visualization Configuration for mast3r-nav
+
+# ============================================
+# Raw Data Storage (Fast, minimal overhead)
+# ============================================
+# Controls what raw data gets saved during navigation
+save_raw_data:
+  enabled: true              # Master toggle for raw data saving
+  
+  # Individual data type toggles
+  rgb: true                  # RGB images as PNG
+  depth: true                # Depth maps as PNG (uint16 mm)
+  pts3d: true                # 3D point clouds as NPY (large files)
+  costmaps: true             # Query costmaps as NPY
+  matches: true              # Match data as NPZ (pixels, confidences, indices)
+  waypoints: true            # Controller waypoints as NPY
+  control_outputs: true      # Velocity and theta as TXT
+  agent_state: true          # Agent pose (position, rotation) as NPY
+  collision: true            # Collision status per step as TXT
+  distance_to_goal: true     # Distance to goal per step as TXT
+
+# ============================================
+# Visualization Rendering (Optional)
+# ============================================
+# Controls whether to generate rendered visualizations
+# Can be done online (during navigation) or offline (after)
+render_visualizations:
+  enabled: true             # Master toggle for visualization rendering
+  online: true              # Render during navigation (slower but instant feedback)
+  
+  # Individual visualization types
+  rgb_images: true           # Save RGB images in visualizations/rgb/ for easy browsing
+  costmap_heatmaps: true     # Heatmaps with colorbars from costmap NPY
+  match_vis: false           # Match visualization removed (to be reimplemented)
+  topdown_trajectory: false   # Agent path on topdown map
+  topdown_meters_per_pixel: 0.025  # Resolution for topdown map
+  combined_step_vis: false    # 3-panel combined view (matches, costmap, waypoints)
+  
+# ============================================
+# Offline Processing Settings
+# ============================================
+offline_vis:
+  create_videos: true        # Whether to create videos from images
+  video_fps: 5               # FPS for generated videos
+  videos_only: false         # If true, skip frame rendering and just create videos from existing frames
+

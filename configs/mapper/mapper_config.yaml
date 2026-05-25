@@ -1,0 +1,97 @@
+# @package _global_
+defaults:
+  - _self_
+
+# Image settings
+image:
+  width: 320
+  height: 240
+
+# Model settings
+model:
+  name: "mast3r"
+  path: "/home/onyx/work_dirs/vanshg/navigation/sg_habitat/libs/matcher/image_matching_models/matching/model_weights/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth"
+  device: "cuda"
+  subsample_or_initxy1: 8
+
+# Graph construction settings
+graph:
+  # Number of subsequent images each image is matched against
+  inter_image_match_window_size: 3
+  
+  # Edge culling mode: NONE, EMST_SINGLE, DELAUNAY_3D
+  edge_culling_mode: "NONE"
+  
+  # Node culling mode: NONE, FPS
+  node_culling_mode: "NONE"
+  
+  # Node culling factor: keep 1 out of N match pairs
+  node_culling_factor: 10
+
+# Processing settings
+processing:
+  # Image subsampling
+  subsample_start_idx: 0
+  subsample_end_idx: null  # null means use all images
+  subsample_step: 1  # Use every Nth image
+  
+  # Force recomputation flags
+  force_recompute_graph: true
+  force_recompute_masks: false
+  
+  # Copy images to output directory
+  copy_images: false
+
+# Compression settings
+compression:
+  enabled: true
+  chunk_size: 1073741824  # 1GB chunks for large graphs
+
+# Scene settings (unified for single and multi)
+scenes:
+  # Parent directory containing scene subdirectories
+  base_dir: "/scratch2/public_scratch/toponav/indoor-topo-loc/datasets/hm3d_navigation/hm3d_iin_val_320x240"
+  
+  # Toggle between single and multi-scene mode
+  multi_scene: false
+  
+  # Base output directory (optional). If set, outputs go to base_out_dir/scene_name/
+  # If null, outputs go to the scene directory itself
+  base_out_dir: /scratch2/public_scratch/vanshg/mast3r-nav/hm3d_val_mapping_pairwise_match_subsample_v3
+  
+  # Single scene mode: scene name (used when multi_scene=false)
+  scene_name: "mL8ThkuaVTM_0000000_bed_26_"
+  
+  # Multi-scene mode options:
+  scene_list_file: /home/onyx/work_dirs/vanshg/navigation/mast3r-nav/episodes_removing_blacklist.txt   # txt file with scene names (1 per line), takes priority
+  start_idx: 0            # Start index
+  end_idx: -1             # End index (-1 = all)
+  step: 1                 # Process every Nth scene
+
+# Goal node settings (for computing distances)
+goal:
+  # Mode: "none", "config", "episode", "update_graph"
+  #   none         - Base graph only, no goal node
+  #   config       - Goal from config (image_idx, pixel_x, pixel_y)
+  #   episode      - Infer goal from episode folder (semantic mask + centroid)
+  #   update_graph - Load existing base graph, add goal from config
+  mode: "episode"
+  
+  # For mode="config" or "update_graph": manual goal specification
+  image_idx: 50
+  pixel_x: 160
+  pixel_y: 120
+  
+  # For mode="update_graph": path to existing base graph (relative to scene dir)
+  base_graph_path: null  # e.g., "graph_base_320x240.pkl.b2s"
+  
+  # For mode="episode": task type affects goal parsing
+  task_type: "original"  # or "alt_goal", "alt_goal_v2"
+  
+  # Output control
+  compute_costmaps: true
+
+# Logging
+logging:
+  verbose: true
+  save_debug_info: false

@@ -1,0 +1,6 @@
+[submodule "libs/matcher/mast3r"]
+	path = libs/matcher/mast3r
+	url = https://github.com/naver/mast3r.git
+[submodule "libs/control/visualnav_transformer"]
+	path = libs/control/visualnav_transformer
+	url = https://github.com/vanshg1729/visualnav-transformer.git
