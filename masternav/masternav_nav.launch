@@ -1,0 +1,49 @@
+<!-- masternav/launch/masternav_nav.launch -->
+<!--
+  IMPORTANT: mast3r-nav uses pixi for its Python environment, which is
+  completely separate from the ROS Python. This means you cannot simply
+  rosrun this script — the pixi env must be active.
+
+  Recommended approach:
+    Terminal 1: roscore
+    Terminal 2: rosrun rosaria RosAria
+    Terminal 3: roslaunch realsense2_camera rs_camera.launch align_depth:=true
+    Terminal 4: cd /opt/mast3r-nav && pixi run python /path/to/masternav_runner.py
+
+  Alternatively, if you install rospy inside the pixi env:
+    pixi add rospy  (or pip install rospy inside pixi shell)
+  Then this launch file can launch the node directly via <node>.
+-->
+<launch>
+  <!-- Robot driver -->
+  <node pkg="rosaria" type="RosAria" name="rosaria" output="screen">
+    <param name="port" value="/dev/ttyUSB0"/>
+  </node>
+
+  <!-- RealSense D435/D415 -->
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="align_depth" value="true"/>
+    <arg name="color_width"  value="320"/>
+    <arg name="color_height" value="240"/>
+    <arg name="color_fps"    value="15"/>
+  </include>
+
+  <!-- MASt3RNav runner node -->
+  <!-- Set MASTERNAV_ROOT to where you cloned vanshg1729/mast3r-nav -->
+  <env name="MASTERNAV_ROOT" value="$(find masternav)/mast3r-nav"/>
+  <node pkg="masternav" type="masternav_runner.py"
+        name="masternav_runner" output="screen">
+    <param name="map_dir"
+           value="/data/maps/lab_scene"/>
+    <param name="costmap_path"
+           value="/data/maps/lab_scene/costmaps_320x240_EC_NONE_NC_NONE_NCF_10.npz"/>
+    <param name="model_ckpt"
+           value="/opt/mast3r-nav/checkpoints/gnm_mast3r_nav/latest.pth"/>
+    <param name="use_gpu"  value="true"/>
+    <param name="v_min"    value="0.10"/>
+    <param name="v_max"    value="0.30"/>
+    <param name="w_max"    value="0.50"/>
+    <param name="v_gain"   value="0.5"/>
+    <param name="w_gain"   value="1.0"/>
+  </node>
+</launch>

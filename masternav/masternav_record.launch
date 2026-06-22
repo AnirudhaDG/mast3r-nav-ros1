@@ -1,0 +1,19 @@
+<!-- masternav/launch/masternav_record.launch -->
+<launch>
+  <node pkg="rosaria" type="RosAria" name="rosaria" output="screen">
+    <param name="port" value="/dev/ttyUSB0"/>
+  </node>
+
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="align_depth"  value="true"/>
+    <arg name="color_width"  value="320"/>
+    <arg name="color_height" value="240"/>
+    <arg name="color_fps"    value="15"/>
+  </include>
+
+  <node pkg="masternav" type="data_recorder.py"
+        name="data_recorder" output="screen">
+    <!-- Change traj name per recording run -->
+    <param name="out_dir" value="/data/recordings/traj_000"/>
+  </node>
+</launch>
